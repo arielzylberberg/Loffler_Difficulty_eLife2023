@@ -1,0 +1,73 @@
+function run_prep_decision_space_plot(datadir)
+
+if nargin==0
+    datadir = './unknown_color/';
+end
+
+d = importdata(fullfile(datadir,'output.txt'));
+s = load(fullfile(datadir,'simulatedTrials.mat'));
+run(fullfile(datadir,'params.m')); 
+x = -pars.MAXDV:pars.DVDELTA:pars.MAXDV;
+
+
+%%
+set(0,'DefaultAxesFontSize',18,...
+    'DefaultFigureUnits', 'normalized', ...
+    'DefaultFigureColor', 'w',...
+    'DefaultAxesLineWidth',0.75, ...
+    'defaultAxesTickLabelInterpreter','none',...
+    'DefaultAxesColor', 'w',...
+    'DefaultFigurePosition', [0.2, 0.2, .6, 0.8]);
+
+
+%%
+
+% set(gcf,'Position',[107   338  1169   162]);
+u = 2:4:16;
+ut = 2 * u * pars.deltatime;
+N = round(length(u));
+p = publish_plot(N,1);
+% set(p.h_fig,'Position',[440   76  147  722]);
+set(p.h_fig,'Position',[0.16609     0.03402      0.1169     0.83438])
+
+for i=2:N
+    p.displace_ax(i:N, 0.04,2);
+end
+
+for i=1:N
+    p.next();
+    I = d.data(:,2)==(u(i)) & d.data(:,4)==(u(i)) & d.data(:,5)==0;
+    D = [d.data(I,1), d.data(I,3), d.data(I,7)];
+    n = sqrt(size(D,1));
+    
+    
+    y = reshape(D(:,3),[n,n]);
+    y = ismember(y,[8,9]); % listen
+    
+    
+     imagesc(x,x,y);
+    colormap([0.7,0.7,0.7; 1, 1, 1])
+    title(['t = ',num2str(ut(i))]);
+    axis xy
+%     axis square
+    
+    
+    xlim([-2,2])
+    ylim([-2,2])
+
+    dat(i).x = x;
+    dat(i).y = y;
+    dat(i).time = ut(i);
+    dat(i).
+    
+end
+
+
+p.unlabel_center_plots();
+
+p.empty_plots_set_invisible();
+
+
+
+
+end
